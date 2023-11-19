@@ -1,10 +1,14 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, Request, Response } from "express";
+import * as bodyParser from "body-parser";
 
 const app: Express = express();
 const port = 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
+// Middleware to parse JSON in the request body
+app.use(bodyParser.json());
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Express + TypeScript Server");
 });
 
 app.listen(port, () => {
