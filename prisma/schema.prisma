@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  createdAt  DateTime  @default(now())
+  username   String    @unique
+  handle     String    @unique
+  password   String
+  image      String
+  bio        String
+  pweeps     Pweep[]
+  likes      Like[]
+  repweeps   Repweep[]
+  followedBy Follows[] @relation("followedBy")
+  following  Follows[] @relation("following")
+}
+
+model Follows {
+  followedBy   User   @relation("followedBy", fields: [followedById], references: [id])
+  followedById String
+  following    User   @relation("following", fields: [followingId], references: [id])
+  followingId  String
+
+  @@id([followingId, followedById])
+}
+
+model Pweep {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  content   String
+  likes     Like[]
+  repweeps  Repweep[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  pweep     Pweep    @relation(fields: [pweepId], references: [id])
+  pweepId   String
+  createdAt DateTime @default(now())
+}
+
+model Repweep {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  pweep     Pweep    @relation(fields: [pweepId], references: [id])
+  pweepId   String
+  createdAt DateTime @default(now())
+}
