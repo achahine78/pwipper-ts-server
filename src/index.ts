@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import * as bodyParser from "body-parser";
+import cors from "cors";
 import { createUser, login } from "./handlers/user";
 import dotenv from 'dotenv';
 
@@ -10,6 +11,7 @@ const port = 3000;
 
 // Middleware to parse JSON in the request body
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
