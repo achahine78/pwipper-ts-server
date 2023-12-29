@@ -3,6 +3,8 @@ import * as bodyParser from "body-parser";
 import cors from "cors";
 import { createUser, login } from "./handlers/user";
 import dotenv from 'dotenv';
+import router from "./router";
+import { protect } from "./modules/auth";
 
 dotenv.config();
 
@@ -13,12 +15,10 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
-
 app.post("/signup", createUser);
 app.post("/login", login);
+
+app.use("/api", protect, router);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
