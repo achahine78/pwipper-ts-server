@@ -39,7 +39,14 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     const token = createJWT(user);
-    res.json({ token });
+    res.json({
+      token,
+      id: user.id,
+      username: user.username,
+      handle: user.handle,
+      image: user.image,
+      bio: user.bio,
+    });
   } catch (e) {
     res.status(409);
     res.json({ message: "Email or username are already taken." });
@@ -86,5 +93,12 @@ export const login = async (req: Request, res: Response) => {
   }
 
   const token = createJWT(user);
-  res.json({ token });
+  res.json({
+    token,
+    id: user.id,
+    username: user.username,
+    handle: user.handle,
+    image: user.image,
+    bio: user.bio,
+  });
 };
