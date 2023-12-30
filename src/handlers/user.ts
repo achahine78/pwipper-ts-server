@@ -102,3 +102,35 @@ export const login = async (req: Request, res: Response) => {
     bio: user.bio,
   });
 };
+
+export const getUserByHandle = async (req: Request, res: Response) => {
+  if (!req.params.handle) {
+    res.status(422);
+    res.json({ message: "Username field is missing." });
+    return;
+  }
+
+  const handle = req.params.handle;
+
+  const user = await prisma.user.findUnique({
+    where: {
+      handle: handle,
+    },
+  });
+
+  if (!user) {
+    res.status(401);
+    res.json({
+      message: "User not found",
+    });
+    return;
+  }
+
+  res.json({
+    id: user.id,
+    username: user.username,
+    handle: user.handle,
+    image: user.image,
+    bio: user.bio,
+  });
+};
