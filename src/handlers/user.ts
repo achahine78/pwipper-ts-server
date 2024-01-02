@@ -134,3 +134,67 @@ export const getUserByHandle = async (req: Request, res: Response) => {
     bio: user.bio,
   });
 };
+
+export const follow = async (req: Request, res: Response) => {
+  if (!req.body.followedBy) {
+    res.status(422);
+    res.json({ message: "Followed by field is missing." });
+    return;
+  }
+
+  if (!req.body.following) {
+    res.status(422);
+    res.json({ message: "Following field is missing." });
+    return;
+  }
+
+  try {
+    const createFollow = await prisma.follows.create({
+      data: {
+        followedById: req.body.followedBy,
+        followingId: req.body.following,
+      },
+    });
+  } catch (e) {
+    res.status(500);
+    res.json({
+      message: "Internal server error",
+    });
+    return;
+  }
+
+  res.sendStatus(200);
+};
+
+export const unfollow = async (req: Request, res: Response) => {
+  if (!req.body.followedBy) {
+    res.status(422);
+    res.json({ message: "Followed by field is missing." });
+    return;
+  }
+
+  if (!req.body.following) {
+    res.status(422);
+    res.json({ message: "Following field is missing." });
+    return;
+  }
+
+  try {
+    await prisma.follows.delete({
+      where: {
+        followingId_followedById: {
+          followedById: req.body.followedBy,
+          followingId: req.body.following,
+        }
+      },
+    });
+  } catch (e) {
+    res.status(500);
+    res.json({
+      message: "Internal server error",
+    });
+    return;
+  }
+
+  res.sendStatus(200);
+};
