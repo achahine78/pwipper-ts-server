@@ -185,7 +185,7 @@ export const unfollow = async (req: Request, res: Response) => {
         followingId_followedById: {
           followedById: req.body.followedBy,
           followingId: req.body.following,
-        }
+        },
       },
     });
   } catch (e) {
@@ -197,4 +197,60 @@ export const unfollow = async (req: Request, res: Response) => {
   }
 
   res.sendStatus(200);
+};
+
+export const getFollowers = async (req: Request, res: Response) => {
+  if (!req.params.userId) {
+    res.status(422);
+    res.json({ message: "User ID is missing." });
+    return;
+  }
+
+  const followers = await prisma.follows.findMany({
+    where: {
+      followingId: req.params.userId,
+    },
+    include: {
+      followedBy: {
+        select: {
+          id: true,
+          handle: true,
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+
+  res.json({
+    followers,
+  });
+};
+
+export const getFollowing = async (req: Request, res: Response) => {
+  if (!req.params.userId) {
+    res.status(422);
+    res.json({ message: "User ID is missing." });
+    return;
+  }
+
+  const following = await prisma.follows.findMany({
+    where: {
+      followedById: req.params.userId,
+    },
+    include: {
+      following: {
+        select: {
+          id: true,
+          handle: true,
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+
+  res.json({
+    following,
+  });
 };
