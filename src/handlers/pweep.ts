@@ -77,6 +77,9 @@ export const getPweepsByUserId = async (req: Request, res: Response) => {
   
     try {
       const pweeps = await prisma.pweep.findMany({
+        orderBy: {
+          createdAt: 'desc'
+        },
         where: {
           userId: req.params.userId,
         },
