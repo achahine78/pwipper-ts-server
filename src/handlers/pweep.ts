@@ -67,40 +67,39 @@ export const getPweep = async (req: Request, res: Response) => {
   }
 };
 
-
 export const getPweepsByUserId = async (req: Request, res: Response) => {
-    if (!req.params.userId) {
-      res.status(422);
-      res.json({ message: "User ID field is missing." });
-      return;
-    }
-  
-    try {
-      const pweeps = await prisma.pweep.findMany({
-        orderBy: {
-          createdAt: 'desc'
-        },
-        where: {
-          userId: req.params.userId,
-        },
-      });
-  
-      if (!pweeps) {
-        res.status(404);
-        res.json({
-          message: "Pweeps not found",
-        });
-        return;
-      }
-  
-      res.json({ pweeps });
-      return;
-    } catch (e) {
-      console.log(e);
-      res.status(500);
+  if (!req.params.userId) {
+    res.status(422);
+    res.json({ message: "User ID field is missing." });
+    return;
+  }
+
+  try {
+    const pweeps = await prisma.pweep.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      where: {
+        userId: req.params.userId,
+      },
+    });
+
+    if (!pweeps) {
+      res.status(404);
       res.json({
-        message: "Internal server error",
+        message: "Pweeps not found",
       });
       return;
     }
-  };
+
+    res.json({ pweeps });
+    return;
+  } catch (e) {
+    console.log(e);
+    res.status(500);
+    res.json({
+      message: "Internal server error",
+    });
+    return;
+  }
+};
